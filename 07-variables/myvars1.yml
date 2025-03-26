@@ -1,0 +1,11 @@
+---
+- hosts: all
+  vars:
+    mycar: LAMBO
+    mybike: Yamaha
+
+  tasks:
+    - name: Display favorite car and bike
+      debug:
+        msg: "Ma voiture favorite est la {{ mycar }} et ma moto favorite est une {{ mybike }}."
+

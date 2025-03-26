@@ -1,0 +1,35 @@
+---
+- name: Installer Apache et déployer une page personnalisée sur un hôte Rocky
+  hosts: rocky
+  become: yes  # Pour obtenir les privilèges root
+
+  tasks:
+    - name: Mettre à jour la liste des paquets
+      dnf:
+        update_cache: yes
+
+    - name: Installer Apache2
+      dnf:
+        name: httpd
+        state: present
+
+    - name: Créer la page web personnalisée
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <head>
+              <title>Apache Web Server</title>
+            </head>
+            <body>
+              <h1>Apache web server running on Rocky Linux</h1>
+            </body>
+          </html>
+
+    - name: S'assurer que le service Apache est démarré et activé au démarrage
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+

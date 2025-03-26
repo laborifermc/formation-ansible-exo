@@ -1,0 +1,44 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install chrony package
+      package:
+        name: chrony
+        state: present
+
+    - name: Start and enable chronyd service
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+
+    - name: Configure chrony
+      lineinfile:
+        path: /etc/chrony.conf
+        regexp: "^{{ item.key }}"
+        line: "{{ item.key }} {{ item.value }}"
+      loop:
+        - { key: 'server 0.fr.pool.ntp.org', value: 'iburst' }
+        - { key: 'server 1.fr.pool.ntp.org', value: 'iburst' }
+        - { key: 'server 2.fr.pool.ntp.org', value: 'iburst' }
+        - { key: 'server 3.fr.pool.ntp.org', value: 'iburst' }
+        - { key: 'driftfile', value: '/var/lib/chrony/drift' }
+        - { key: 'makestep', value: '1.0 3' }
+        - { key: 'rtcsync', value: '' }
+        - { key: 'logdir', value: '/var/log/chrony' }
+      notify: Restart chronyd service
+
+    - name: Restart chronyd service
+      service:
+        name: chronyd
+        state: restarted
+
+  handlers:
+    - name: Restart chronyd service
+      service:
+        name: chronyd
+        state: restarted
+
