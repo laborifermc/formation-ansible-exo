@@ -1,0 +1,21 @@
+---
+- name: Display user and password
+  hosts: localhost
+  gather_facts: no
+  vars_prompt:
+    - name: user
+      prompt: "Entrez le nom d'utilisateur"
+      private: false
+      default: "microlinux"
+
+    - name: password
+      prompt: "Entrez le mot de passe"
+      private: true
+      default: "yatahongaga"
+
+  tasks:
+    - name: Afficher l'utilisateur et le mot de passe
+      debug:
+        msg: "Utilisateur: {{ user }}, Mot de passe: {{ password }}"
+
+
