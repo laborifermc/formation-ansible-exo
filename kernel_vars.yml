@@ -1,0 +1,14 @@
+---
+- name: Afficher les informations du noyau
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Exécuter la commande uname -a
+      command: uname -a
+      register: kernel_info
+
+    - name: Afficher les informations du noyau
+      debug:
+        var: kernel_info.stdout
+
+
