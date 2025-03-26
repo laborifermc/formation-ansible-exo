@@ -1,0 +1,31 @@
+---
+- name: Afficher la version de Python installée
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Vérifier la version de Python 3
+      command: python3 --version
+      register: python_version
+      ignore_errors: yes
+
+    - name: Vérifier si Python 3 est installé
+      set_fact:
+        python3_installed: "{{ python_version.rc == 0 }}"
+
+    - name: Vérifier la version de Python si Python 3 n'est pas installé
+      command: python --version
+      register: python_version_legacy
+      when: not python3_installed
+      ignore_errors: yes
+
+    - name: Afficher la version de Python
+      debug:
+        msg: >
+          {% if python3_installed %}
+            Version de Python 3 : {{ python_version.stdout }}
+          {% elif python_version_legacy is defined and python_version_legacy.rc == 0 %}
+            Version de Python : {{ python_version_legacy.stdout }}
+          {% else %}
+            Python n'est pas installé.
+          {% endif %}
+
